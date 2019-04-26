@@ -1,0 +1,19 @@
+---
+title: "Final Report"
+author: "Adina Zhang"
+date: "April 26, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+```
+
+## Introduction
+
+
+\newpage
+
+## Appendix

@@ -1,0 +1,17 @@
+---
+title: "Young People Survey Cleaning"
+author: "Adina Zhang"
+date: "April 26, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(dplyr)
+```
+
+```{r}
+survey = read_csv("responses.csv") %>% janitor::clean_names()
+```
+
