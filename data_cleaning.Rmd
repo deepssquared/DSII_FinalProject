@@ -9,6 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
+library(lattice)
+library(caret)
+library(corrplot)
 ```
 
 ```{r}
@@ -26,10 +29,39 @@ vars <-c(#Predictors
          "gender")
 
 #Subset Data
-survey_new <-survey[vars]
+survey_new <-survey[vars] 
+
+#Recoding Data
+survey_new$gender <- recode(survey_new$gender, "male" = 1, "female" = 0)
+
+survey_new$alcohol <- recode(survey_new$alcohol, "drink a lot" = 2, "social drinker" = 1, "never" = 0)
+
+survey_new$smoking <- recode(survey_new$smoking, "never smoked" = 0, "former smoker" = 2, "tried smoking" = 3, "current smoker" = 4)
+
+#Count Missing Entries
+sapply(survey_new, function(x)sum(is.na(survey_new))) %>% print()
+```
+
+#EDA
+```{r eda}
+eda <-survey_new %>% na.omit() 
+
+# matrix of predictors 
+x  <- eda
+x$gender <- NULL
+
+
+#matrix predictors with dummy variables
+x_dummy <-model.matrix(gender~.,eda)[,-1]
+
+# vector of response
+y <- eda$gender 
+
+cor(x) %>% corrplot()
 
 ```
 
+#PCA
 ```{r}
-
+pca <- prcomp(eda)
 ```
