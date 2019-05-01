@@ -13,5 +13,23 @@ library(dplyr)
 
 ```{r}
 survey = read_csv("responses.csv") %>% janitor::clean_names()
+names(survey)
+
+#List Predictors and Outcome of Interest
+vars <-c(#Predictors
+  "metal_or_hardrock", "punk", "horror", "thriller", "war", "action",
+  "countryside_outdoors", "active_sport", "adrenaline_sports", "cars",
+  "fear_of_public_speaking",
+  "smoking", "alcohol",
+  "criminal_damage", "cheating_in_school", "small_big_dogs", "prioritising_workload","assertiveness", "parents_advice",
+         #Outcome
+         "gender")
+
+#Subset Data
+survey_new <-survey[vars]
+
 ```
 
+```{r}
+
+```
