@@ -12,6 +12,8 @@ library(dplyr)
 library(lattice)
 library(caret)
 library(corrplot)
+library(ggplot2)
+library(gridExtra)
 ```
 
 ```{r}
@@ -60,6 +62,59 @@ y <- eda$gender
 cor(x) %>% corrplot()
 
 ```
+
+#Histograms/Distributions of Predictors and Outcomes
+```{r}
+par(mfrow=c(4,5))
+plot1 <- ggplot(eda, aes(x=gender)) +
+    geom_histogram(binwidth=1, colour="black", fill="red")
+plot2 <-ggplot(eda, aes(x=metal_or_hardrock)) +
+    geom_histogram(binwidth=1, colour="black", fill="orange")
+plot3 <-ggplot(eda, aes(x=punk)) +
+    geom_histogram(binwidth=1, colour="black", fill="yellow")
+plot4 <-ggplot(eda, aes(x=horror)) +
+    geom_histogram(binwidth=1, colour="black", fill="blue")
+plot5 <-ggplot(eda, aes(x=thriller)) +
+    geom_histogram(binwidth=1, colour="black", fill="violet")
+plot6 <-ggplot(eda, aes(x=war)) +
+    geom_histogram(binwidth=1, colour="black", fill="pink")
+plot7 <-ggplot(eda, aes(x=action)) +
+    geom_histogram(binwidth=1, colour="black", fill="red")
+plot8 <-ggplot(eda, aes(x=countryside_outdoors)) +
+    geom_histogram(binwidth=1, colour="black", fill="orange")
+plot9 <-ggplot(eda, aes(x=active_sport)) +
+    geom_histogram(binwidth=1, colour="black", fill="yellow")
+plot10 <-ggplot(eda, aes(x=adrenaline_sports)) +
+    geom_histogram(binwidth=1, colour="black", fill="green")
+plot11 <-ggplot(eda, aes(x=cars)) +
+    geom_histogram(binwidth=1, colour="black", fill="blue")
+plot12 <-ggplot(eda, aes(x=fear_of_public_speaking)) +
+    geom_histogram(binwidth=1, colour="black", fill="purple")
+plot13 <-ggplot(eda, aes(x=smoking)) +
+    geom_histogram(binwidth=1, colour="black", fill="pink")
+plot14 <-ggplot(eda, aes(x=alcohol)) +
+    geom_histogram(binwidth=1, colour="black", fill="white")
+plot15 <-ggplot(eda, aes(x=criminal_damage)) +
+    geom_histogram(binwidth=1, colour="black", fill="black")
+plot16 <-ggplot(eda, aes(x=cheating_in_school)) +
+    geom_histogram(binwidth=1, colour="black", fill="red")
+plot17 <-ggplot(eda, aes(x=small_big_dogs)) +
+    geom_histogram(binwidth=1, colour="black", fill="yellow")
+plot18 <-ggplot(eda, aes(x=prioritising_workload)) +
+    geom_histogram(binwidth=1, colour="black", fill="orange")
+plot19 <-ggplot(eda, aes(x=assertiveness)) +
+    geom_histogram(binwidth=1, colour="black", fill="pink")
+plot20 <-ggplot(eda, aes(x=parents_advice)) +
+    geom_histogram(binwidth=1, colour="black", fill="white")
+
+#plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10,
+# plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20
+
+grid.arrange(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10,
+             plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, ncol=4, nrow = 5)
+
+```
+
 
 #PCA
 ```{r}
