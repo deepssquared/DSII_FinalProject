@@ -118,5 +118,13 @@ grid.arrange(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot
 
 #PCA
 ```{r}
-pca <- prcomp(eda)
+library(factoextra)
+eda_pca <-eda
+
+pca <- prcomp(eda_pca)
+pca$rotation
+
+fviz_pca_biplot(pca, axes = c(1,2), 
+                habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
+                label = c("var"), addEllipses = TRUE)
 ```
