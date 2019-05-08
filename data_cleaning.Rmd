@@ -127,4 +127,10 @@ pca$rotation
 fviz_pca_biplot(pca, axes = c(1,2), 
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
                 label = c("var"), addEllipses = TRUE)
+
+
+pca$sdev
+pca.var =pca$sdev ^2
+pve=pca.var/sum(pca.var )
+pve
 ```
