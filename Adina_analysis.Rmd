@@ -77,7 +77,7 @@ confusionMatrix(data = rf.pred,
 
 ```{r}
 # Set tuning grid
-xgbGrid <- expand.grid(nrounds = c(100, 200, 500),  
+xgbGrid <- expand.grid(nrounds = c(100, 200),  
                        max_depth = c(5, 10, 15, 20),
                        colsample_bytree = seq(0.5, 0.9, length.out = 5),
                        eta = 0.1,
