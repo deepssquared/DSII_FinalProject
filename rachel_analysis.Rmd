@@ -1,0 +1,73 @@
+---
+title: "KNN and SVM"
+author: "Rachel Tsong"
+date: "May 9, 2019"
+output: html_document
+---
+
+```{r }
+library(tidyverse)
+library(caret)
+library(pROC)
+```
+
+## KNN
+
+Import data and divide into training and testing sets
+```{r}
+dat1 = read_csv("./final.csv") %>%
+  dplyr::select(-X1) %>%
+  mutate(gender = ifelse(gender == 0, "female", "male"))
+
+set.seed(1)
+# Partition dataset into training and testing datasets
+row_train = createDataPartition(y = dat1$gender, p = 0.8, list = FALSE)
+dat1_train = dat1[row_train,]
+dat1_test = dat1[-row_train,]
+```
+
+Fit KNN
+```{r}
+set.seed(1)
+
+ctrl = trainControl(method = "repeatedcv",
+                    repeats = 5,
+                    summaryFunction = twoClassSummary,
+                    classProbs = TRUE)
+
+model_knn = train(x = dat1_train[,1:19],
+                  y = dat1_train$gender,
+                  method = "knn",
+                  preProcess = c("center", "scale"),
+                  tuneGrid = data.frame(k = seq(1, 150, by = 2)),
+                  trControl = ctrl)
+
+ggplot(model_knn)
+```
+
+Test model performance (test set)
+```{r}
+knn_pred = predict(model_knn,
+                   newdata = dat1_test,
+                   type = "prob")[,2]
+roc_knn = roc(dat1_test$gender,
+              knn_pred)
+
+auc = roc_knn$auc[1]
+plot(roc_knn)
+legend("bottomright", legend = paste0("AUC", ": ", round(auc,3)))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
