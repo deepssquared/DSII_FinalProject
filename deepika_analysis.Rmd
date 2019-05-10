@@ -3,17 +3,168 @@ title: "Deepika Analysis"
 
 ---
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. 
-
-```{r}
-plot(cars)
+```{r libraries}
+library(ggplot2)
+library(caret) 
+library(glmnet)
+library(MASS) 
+library(e1071) 
+library(mlbench) 
+library(pROC) 
+library(AppliedPredictiveModeling)
+library(tidyverse)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+```{r data import}
+dat1<-read.csv("final.csv")
+dat1$X <-NULL
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+#Data Partition
+set.seed(1)
+rowTrain <-createDataPartition(y=dat1$gender, p=0.8, list=FALSE)
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+#Set Gender as factor
+dat1$gender <-as.factor(dat1$gender)
+levels(dat1$gender) <-c("female", "male")
 
+```
+
+
+#Logistic regression: General
+```{r}
+#Cross Validation
+ctrl <- trainControl(method = "repeatedcv", 
+                     repeats = 5, 
+                     summaryFunction = twoClassSummary, 
+                     classProbs = TRUE) 
+
+set.seed(1) 
+
+
+log.fit <- train(x = dat1[rowTrain,1:19], 
+                   y = dat1$gender[rowTrain], 
+                   method = "glm", 
+                   metric = "ROC", 
+                   trControl = ctrl)
+```
+
+
+##Confusion Matrix: Logistic Regression
+```{r}
+test.pred <-predict(log.fit, newdata = dat1[-rowTrain,], type = "raw")
+
+confusionMatrix(data = as.factor(test.pred), 
+                reference = dat1$gender[-rowTrain], 
+                positive = "male")
+
+```
+
+
+##ROC Curve: Logistic Regression
+```{r}
+test.pred.prob <-predict(log.fit, newdata = dat1[-rowTrain,], type = "prob")
+roc.glm <- roc(dat1$gender[-rowTrain], test.pred.prob$male) 
+plot(roc.glm, legacy.axes = TRUE, print.auc = TRUE) 
+plot(smooth(roc.glm), col = 4, add = TRUE)
+
+
+```
+
+#Logistic Regression: Regularized
+```{r}
+#Tuning Gride
+glmnGrid <- expand.grid(.alpha = seq(0, 1, length = 6), 
+                        .lambda = exp(seq(-8, -2, length = 20))) 
+
+set.seed(1) 
+reg.fit <- train(x = dat1[rowTrain,1:19], 
+                   y = dat1$gender[rowTrain],
+                    method = "glmnet", 
+                    tuneGrid = glmnGrid, 
+                    metric = "ROC", trControl = ctrl)
+
+plot(reg.fit, xTrans = function(x) log(x))
+
+#The final values used for the model were alpha = 0 and lambda = 0.07196474
+```
+
+##Confusion Matrix: Logistic Regression (Regularized)
+```{r}
+test.pred2 <-predict(reg.fit, newdata = dat1[-rowTrain,], type = "raw")
+
+confusionMatrix(data = as.factor(test.pred2), 
+                reference = dat1$gender[-rowTrain], 
+                positive = "male")
+
+```
+
+##ROC Curve: Logistic Regression (Regularized)
+```{r}
+test.pred.prob2 <-predict(reg.fit, newdata = dat1[-rowTrain,], type = "prob")
+roc.glm2 <- roc(dat1$gender[-rowTrain], test.pred.prob2$male) 
+plot(roc.glm2, legacy.axes = TRUE, print.auc = TRUE) 
+plot(smooth(roc.glm2), col = 4, add = TRUE)
+
+```
+
+#Discriminant analysis (Linear)
+```{r}
+set.seed(1) 
+model.lda <- train(x = dat1[rowTrain,1:19], 
+                   y = dat1$gender[rowTrain], 
+                   method = "lda", 
+                   metric = "ROC", 
+                   trControl = ctrl)
+
+```
+
+
+##Confusion Matrix: Discriminant analysis (Linear)
+```{r}
+lda.pred <- predict(model.lda, newdata = dat1[-rowTrain,], type = "raw")
+
+confusionMatrix(data = as.factor(lda.pred), 
+                reference = dat1$gender[-rowTrain], 
+                positive = "male")
+```
+
+##ROC Curve: Discriminant analysis (Linear)
+```{r}
+lda.pred.prob <-predict(model.lda, newdata = dat1[-rowTrain,], type = "prob")
+roc.lda <- roc(dat1$gender[-rowTrain], lda.pred.prob$male) 
+plot(roc.lda, legacy.axes = TRUE, print.auc = TRUE) 
+plot(smooth(roc.lda), col = 4, add = TRUE)
+
+```
+
+#Discriminant analysis (Quadratic)
+```{r}
+set.seed(1) 
+model.qda <- train(x = dat1[rowTrain,1:19], 
+                   y = dat1$gender[rowTrain], 
+                   method = "qda", 
+                   metric = "ROC", 
+                   trControl = ctrl)
+
+```
+
+
+##Confusion Matrix: Discriminant analysis (Quadratic)
+```{r}
+qda.pred <- predict(model.qda, newdata = dat1[-rowTrain,], type = "raw")
+
+confusionMatrix(data = as.factor(qda.pred), 
+                reference = dat1$gender[-rowTrain], 
+                positive = "male")
+
+```
+
+##ROC Curve: Discriminant analysis (Quadratic)
+```{r}
+qda.pred.prob <-predict(model.qda, newdata = dat1[-rowTrain,], type = "prob")
+roc.qda <- roc(dat1$gender[-rowTrain], qda.pred.prob$male) 
+plot(roc.qda, legacy.axes = TRUE, print.auc = TRUE) 
+plot(smooth(roc.qda), col = 4, add = TRUE)
+
+```
