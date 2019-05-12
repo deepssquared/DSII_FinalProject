@@ -2,7 +2,9 @@
 title: "Young People Survey Cleaning"
 author: "Adina Zhang"
 date: "April 26, 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +15,7 @@ library(lattice)
 library(caret)
 library(corrplot)
 library(ggplot2)
-library(gridExtra)
+library(ggpubr)
 library(AppliedPredictiveModeling)
 ```
 
@@ -53,7 +55,6 @@ eda <-survey_new %>% na.omit()
 x  <- eda
 x$gender <- NULL
 
-
 #matrix predictors with dummy variables
 x_dummy <-model.matrix(gender~.,eda)[,-1]
 
@@ -67,61 +68,83 @@ cor(x) %>% corrplot()
 #Histograms/Distributions of Predictors and Outcomes
 
 ```{r}
-par(mfrow=c(4,5))
-plot1 <- ggplot(eda, aes(x=gender)) +
-    geom_histogram(binwidth=1, colour="black", fill="red")
-plot2 <-ggplot(eda, aes(x=metal_or_hardrock)) +
-    geom_histogram(binwidth=1, colour="black", fill="orange")
-plot3 <-ggplot(eda, aes(x=punk)) +
-    geom_histogram(binwidth=1, colour="black", fill="yellow")
-plot4 <-ggplot(eda, aes(x=horror)) +
-    geom_histogram(binwidth=1, colour="black", fill="blue")
-plot5 <-ggplot(eda, aes(x=thriller)) +
-    geom_histogram(binwidth=1, colour="black", fill="violet")
-plot6 <-ggplot(eda, aes(x=war)) +
-    geom_histogram(binwidth=1, colour="black", fill="pink")
-plot7 <-ggplot(eda, aes(x=action)) +
-    geom_histogram(binwidth=1, colour="black", fill="red")
-plot8 <-ggplot(eda, aes(x=countryside_outdoors)) +
-    geom_histogram(binwidth=1, colour="black", fill="orange")
-plot9 <-ggplot(eda, aes(x=active_sport)) +
-    geom_histogram(binwidth=1, colour="black", fill="yellow")
-plot10 <-ggplot(eda, aes(x=adrenaline_sports)) +
-    geom_histogram(binwidth=1, colour="black", fill="green")
-plot11 <-ggplot(eda, aes(x=cars)) +
-    geom_histogram(binwidth=1, colour="black", fill="blue")
-plot12 <-ggplot(eda, aes(x=fear_of_public_speaking)) +
-    geom_histogram(binwidth=1, colour="black", fill="purple")
-plot13 <-ggplot(eda, aes(x=smoking)) +
-    geom_histogram(binwidth=1, colour="black", fill="pink")
-plot14 <-ggplot(eda, aes(x=alcohol)) +
-    geom_histogram(binwidth=1, colour="black", fill="white")
-plot15 <-ggplot(eda, aes(x=criminal_damage)) +
-    geom_histogram(binwidth=1, colour="black", fill="black")
-plot16 <-ggplot(eda, aes(x=cheating_in_school)) +
-    geom_histogram(binwidth=1, colour="black", fill="red")
-plot17 <-ggplot(eda, aes(x=small_big_dogs)) +
-    geom_histogram(binwidth=1, colour="black", fill="yellow")
-plot18 <-ggplot(eda, aes(x=prioritising_workload)) +
-    geom_histogram(binwidth=1, colour="black", fill="orange")
-plot19 <-ggplot(eda, aes(x=assertiveness)) +
-    geom_histogram(binwidth=1, colour="black", fill="pink")
-plot20 <-ggplot(eda, aes(x=parents_advice)) +
-    geom_histogram(binwidth=1, colour="black", fill="white")
+#Integer to Categorical Variable
+eda$gender2 <-as.factor(eda$gender)
+levels(eda$gender2) <-c("female", "male")
+
+plot2 <-ggplot(eda, aes(x=metal_or_hardrock, fill=gender2)) +
+    geom_histogram(binwidth=1, color="black")
+
+plot3 <-ggplot(eda, aes(x=punk, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot4 <-ggplot(eda, aes(x=horror, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot5 <-ggplot(eda, aes(x=thriller, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot6 <-ggplot(eda, aes(x=war, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot7 <-ggplot(eda, aes(x=action, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot8 <-ggplot(eda, aes(x=countryside_outdoors, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot9 <-ggplot(eda, aes(x=active_sport, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot10 <-ggplot(eda, aes(x=adrenaline_sports, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot11 <-ggplot(eda, aes(x=cars, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot12 <-ggplot(eda, aes(x=fear_of_public_speaking, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot13 <-ggplot(eda, aes(x=smoking, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot14 <-ggplot(eda, aes(x=alcohol, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot15 <-ggplot(eda, aes(x=criminal_damage, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot16 <-ggplot(eda, aes(x=cheating_in_school, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot17 <-ggplot(eda, aes(x=small_big_dogs, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot18 <-ggplot(eda, aes(x=prioritising_workload, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot19 <-ggplot(eda, aes(x=assertiveness, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
+
+plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black")
 
 #plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10,
 # plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20
-
-grid.arrange(plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10,
-             plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, ncol=4, nrow = 5)
-
 ```
 
+
+```{r}
+
+ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, legend = NULL, common.legend=TRUE)
+
+```
 
 #PCA
 ```{r}
 library(factoextra)
 eda_pca <-eda
+eda_pca$gender2 <-NULL
 
 pca <- prcomp(eda_pca)
 pca$rotation
@@ -129,18 +152,13 @@ pca$rotation
 fviz_pca_biplot(pca, axes = c(1,2), 
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
                 label = c("var"), addEllipses = TRUE)
-<<<<<<< HEAD
-```
-
-
-
-
-
-=======
 
 pca$sdev
 pca.var =pca$sdev ^2
 pve=pca.var/sum(pca.var )
 pve
 ```
->>>>>>> 85c2dffeaeeb1bf9d3fb192d072f75611a22e574
+
+
+
+
