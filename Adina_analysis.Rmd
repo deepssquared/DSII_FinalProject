@@ -103,6 +103,15 @@ ggplot(xgb.fit, highlight = TRUE) +
 
 ```
 
+Initial best tune parameters:
+nrounds - 100
+max_depth - 2
+eta - 0.1
+gamma - 0
+colsample_bytree - 0.8
+min_child_weight - 1
+subsample - 1
+
 ```{r}
 # Variable importance
 xgb_imp = xgb.importance(feature_names = xgb.fit$finalModel$feature_names,

@@ -27,7 +27,6 @@ dat1_test = dat1[-row_train,]
 
 # Set up cross-validation for tuning parameters
 ctrl = trainControl(method = "repeatedcv",
-                    repeats = 5,
                     summaryFunction = twoClassSummary,
                     classProbs = TRUE)
 ```
@@ -58,7 +57,9 @@ log.fit = train(gender~., dat1_train,
                  trControl = ctrl)
 ```
 
-### Linear Discriminant Analysis
+### Discriminant Analysis
+
+**Linear**
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -69,7 +70,7 @@ lda.fit = train(gender~., dat1_train,
                    trControl = ctrl)
 ```
 
-### Quadratic Discriminant Analysis
+**Quadratic**
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -87,9 +88,44 @@ knn.fit = train(x = dat1_train[,1:19],
                 y = dat1_train$gender,
                 method = "knn",
                 preProcess = c("center", "scale"),
-                tuneGrid = data.frame(k = seq(1, 150, by = 2)),
+                tuneGrid = data.frame(k = seq(50, 120, by = 2)),
                 trControl = ctrl)
 ```
+
+### SVM 
+
+**Linear**
+
+```{r, include = FALSE}
+set.seed(1)
+# Run linear SVM
+svm_linear = train(gender ~ . ,
+                   data = dat1_train,
+                   method = "svmLinear2",
+                   preProcess = c("center", "scale"),
+                   tuneGrid = data.frame(cost = exp(seq(-5, 1, len = 30))),
+                   metric = "ROC",
+                   trControl = ctrl)
+```
+
+**Radial**
+
+```{r}
+# Set tuning grid
+radial_grid = expand.grid(C = exp(seq(-4, 5, len = 15)),
+                          sigma = exp(seq(-8, -5, len = 5)))
+
+set.seed(1)
+# Fit radial SVM model
+svm_radial = train(gender ~ .,
+                   data = dat1_train,
+                   method = "svmRadial",
+                   preProcess = c("center", "scale"),
+                   tuneGrid = radial_grid,
+                   metric = "ROC",
+                   trControl = ctrl)
+```
+
 
 ### Random Forest
 
@@ -136,7 +172,8 @@ xgb.fit = train(gender~., dat1_train,
 ```{r}
 resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
                         QDA = qda.fit, KNN = knn.fit,
-                        RF = rf.fit))
+                        SVML = svm_linear, SVMR = svm_radial,
+                        RF = rf.fit, XGB = xgb.fit))
 bwplot(resamp)
 ```
 
