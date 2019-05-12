@@ -1,18 +1,100 @@
 ---
-title: "Final Report"
-author: "Adina Zhang"
-date: "April 26, 2019"
+title: "The Gender and Health Paradox..."
+author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
+date: "May 14, 2019"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
+library(caret)
+library(ranger)
+library(xgboost)
+
+# Load Datset
+dat1 = read_csv("./final.csv") %>%
+  dplyr::select(-X1) %>%
+  mutate(gender = ifelse(gender == 0, "female", "male"))
+
+set.seed(1)
+# Partition dataset into training and testing datasets
+row_train = createDataPartition(y = dat1$gender, p = 0.8, list = FALSE)
+dat1_train = dat1[row_train,]
+dat1_test = dat1[-row_train,]
+
+# Set up cross-validation for tuning parameters
+ctrl = trainControl(method = "repeatedcv",
+                    summaryFunction = twoClassSummary,
+                    classProbs = TRUE)
 ```
 
 ## Introduction
 
+One public health phenomenon that has been the subject of debate is the “Gender and Health Paradox”, in which women experience decreased quality of life, yet have higher life expectancies than men. A theory that seeks to explain this pattern outlines increased risk-taking by men as a causal mechanism. By this logic, men would indicate more risk-taking behaviors than women when controlled for age and other confounders. We sought to test this theory by examining if risk-seeking behaviors could be predictive of gender. For our analysis, we used a data set consisting of responses from a 2013 survey administered among statistics students at Comenius University in Bratislava, Slovakia.
+
+## Data Exploration
+
+## Methods
+
+## Models
+
+### Logistic Regression
+
+```{r, include = FALSE}
+set.seed(1) 
+# Fit a logistic regression 
+log.fit = train(gender~., dat1_train,
+                 method = "glm",
+                 metric = "ROC",
+                 trControl = ctrl)
+```
+
+### Linear Discriminant Analysis
+
+```{r, include = FALSE}
+set.seed(1) 
+# Fit LDA model
+lda.fit = train(gender~., dat1_train, 
+                   method = "lda", 
+                   metric = "ROC", 
+                   trControl = ctrl)
+```
+
+### Random Forest
+
+```{r, include = FALSE}
+# Set up tuning grid for random forest
+rf.grid = expand.grid(mtry = 1:5,
+                      splitrule = "gini",
+                      min.node.size = 1:10)
+
+set.seed(1)
+# Run Random Forest
+rf.fit = train(gender~., dat1_train,
+               method = "ranger",
+               tuneGrid = rf.grid, 
+               trControl = ctrl,
+               metric = "ROC",
+               importance = "impurity")
+```
+
+### Extreme Gradient Boosting
+
+
+## Model Selection 
+
+```{r}
+resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
+                        RF = rf.fit))
+bwplot(resamp)
+```
+
+
+## Final Model
+
+## Conclusion
 
 \newpage
 

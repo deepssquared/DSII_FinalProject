@@ -9,9 +9,6 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(caret)
-library(rpart)
-library(rpart.plot)
-library(randomForest)
 library(ranger)
 library(xgboost)
 library(gbm)
@@ -34,7 +31,9 @@ dat1_test = dat1[-row_train,]
 
 ```{r}
 # Set up cross-validation for caret package
-ctrl = trainControl(method = "cv", number = 10)
+ctrl = ctrl <-trainControl(method = "repeatedcv",
+                           summaryFunction = twoClassSummary,
+                           classProbs = TRUE)
 
 # Set up tuning grid for random forest
 rf.grid = expand.grid(mtry = 1:5,
@@ -47,6 +46,7 @@ rf.fit = train(gender~., dat1_train,
                method = "ranger",
                tuneGrid = rf.grid, 
                trControl = ctrl,
+               metric = "ROC",
                importance = "impurity")
 
 # Plot of accuracy with different tuning parameters
@@ -69,16 +69,16 @@ varImp(rf.fit)
 # Prediction
 rf.pred = predict(rf.fit, newdata = dat1_test)
 confusionMatrix(data = rf.pred,
-                reference = dat1_test$gender,
-                positive = "1")
+                reference = factor(dat1_test$gender),
+                positive = "male")
 ```
 
 ## Boosting
 
 ```{r}
 # Set tuning grid
-xgbGrid <- expand.grid(nrounds = c(100, 200),  
-                       max_depth = c(5, 10, 15, 20),
+xgbGrid = expand.grid(nrounds = c(100, 200),  
+                       max_depth = c(2, 3, 4, 5, 6),
                        colsample_bytree = seq(0.5, 0.9, length.out = 5),
                        eta = 0.1,
                        gamma = 0,
@@ -91,6 +91,7 @@ xgb.fit = train(gender~., dat1_train,
                 trControl = ctrl,
                 tuneGrid = xgbGrid, 
                 method = "xgbTree",
+                metric = "ROC",
                 importance = "impurity")
 
 # Plot of accuracy with different tuning parameters
@@ -104,15 +105,18 @@ ggplot(xgb.fit, highlight = TRUE) +
 
 ```{r}
 # Variable importance
+xgb_imp = xgb.importance(feature_names = xgb.fit$finalModel$feature_names,
+                         model = xgb.fit$finalModel)
+xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance")
 varImp(xgb.fit)
 ```
 
 ```{r}
 # Prediction
-rf.pred = predict(xgb.fit, newdata = dat1_test)
-confusionMatrix(data = rf.pred,
-                reference = dat1_test$gender,
-                positive = "1")
+boost.pred = predict(xgb.fit, newdata = dat1_test)
+confusionMatrix(data = boost.pred,
+                reference = factor(dat1_test$gender),
+                positive = "male")
 ```
 
 ## Model Comparison
