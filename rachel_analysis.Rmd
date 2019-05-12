@@ -60,7 +60,37 @@ legend("bottomright", legend = paste0("AUC", ": ", round(auc,3)))
 ```
 
 
+### SVM
 
+Linear Kernel
+```{r}
+ctrl = trainControl(method = "cv")
+
+set.seed(1)
+
+svm_linear = train(gender ~ . ,
+                   data = dat1_train,
+                   method = "svmLinear2",
+                   preProcess = c("center", "scale"),
+                   tuneGrid = data.frame(cost = exp(seq(-5, 1, len = 30))),
+                   trControl = ctrl)
+ggplot(svm_linear, highlight = TRUE)
+```
+
+Radial Kernel
+```{r}
+radial_grid = expand.grid(C = exp(seq(-4, 5, len = 15)),
+                          sigma = exp(seq(-8, -5, len = 5)))
+
+set.seed(1)
+svm_radial = train(gender ~ .,
+                   data = dat1_train,
+                   method = "svmRadial",
+                   preProcess = c("center", "scale"),
+                   tuneGrid = radial_grid,
+                   trControl = ctrl)
+ggplot(svm_radial, highlight = TRUE)
+```
 
 
 
