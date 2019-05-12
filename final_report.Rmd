@@ -1,5 +1,5 @@
 ---
-title: "The Gender and Health Paradox..."
+title: "Predicting Gender from Risk-Seeking Behaviors"
 author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
 date: "May 14, 2019"
 output: html_document
@@ -33,12 +33,13 @@ ctrl = trainControl(method = "repeatedcv",
 
 ## Introduction
 
-One public health phenomenon that has been the subject of debate is the “Gender and Health Paradox”, in which women experience decreased quality of life, yet have higher life expectancies than men. A theory that seeks to explain this pattern outlines increased risk-taking by men as a causal mechanism. By this logic, men would indicate more risk-taking behaviors than women when controlled for age and other confounders. We sought to test this theory by examining if risk-seeking behaviors could be predictive of gender. For our analysis, we used a data set consisting of responses from a 2013 survey administered among statistics students at Comenius University in Bratislava, Slovakia.
+One public health phenomenon that has been the subject of debate is the “Gender and Health Paradox”, in which women experience decreased quality of life, yet have higher life expectancies than men. A theory that seeks to explain this pattern outlines increased risk-taking by men as a causal mechanism. By this logic, men would indicate more risk-taking behaviors than women when controlled for age and other confounders. We sought to test this theory by examining if risk-seeking behaviors could be predictive of gender. 
 
 **Young People's Survey**
 
-This dataset was downloaded from Kaggle. Before subsetting the data, we looked through the codebook and decided which predictors and outcomes were of our interest. After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.  
+For our analysis, we used a data set consisting of 1,010 responses from a 2013 survey administered among statistics students and their friends at Comenius University in Bratislava, Slovakia. This dataset is available to download from Kaggle. The survey consisted of 150 items including music and movie preferences, hobbies and interests, phobias, health habits, personality traits, views on life, and opinions, spending habits, and demographics. To test our hypotheses, we selected 19 variables that would demonstrate risk-seeking behavior.
 
+After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.
 
 ## Data Exploration
 
