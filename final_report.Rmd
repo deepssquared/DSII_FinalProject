@@ -12,6 +12,7 @@ library(dplyr)
 library(caret)
 library(ranger)
 library(xgboost)
+library(pROC)
 
 # Load Datset
 dat1 = read_csv("./final.csv") %>%
@@ -26,6 +27,7 @@ dat1_test = dat1[-row_train,]
 
 # Set up cross-validation for tuning parameters
 ctrl = trainControl(method = "repeatedcv",
+                    repeats = 5,
                     summaryFunction = twoClassSummary,
                     classProbs = TRUE)
 ```
@@ -34,9 +36,14 @@ ctrl = trainControl(method = "repeatedcv",
 
 One public health phenomenon that has been the subject of debate is the “Gender and Health Paradox”, in which women experience decreased quality of life, yet have higher life expectancies than men. A theory that seeks to explain this pattern outlines increased risk-taking by men as a causal mechanism. By this logic, men would indicate more risk-taking behaviors than women when controlled for age and other confounders. We sought to test this theory by examining if risk-seeking behaviors could be predictive of gender. For our analysis, we used a data set consisting of responses from a 2013 survey administered among statistics students at Comenius University in Bratislava, Slovakia.
 
+**Young People's Survey**
+
+This dataset was downloaded from Kaggle. Before subsetting the data, we looked through the codebook and decided which predictors and outcomes were of our interest. After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.  
+
+
 ## Data Exploration
 
-## Methods
+## Method
 
 ## Models
 
@@ -62,6 +69,28 @@ lda.fit = train(gender~., dat1_train,
                    trControl = ctrl)
 ```
 
+### Quadratic Discriminant Analysis
+
+```{r, include = FALSE}
+set.seed(1) 
+# Fit QDA model
+qda.fit <- train(gender~., dat1_train, 
+                   method = "qda", 
+                   metric = "ROC", 
+                   trControl = ctrl)
+```
+
+### KNN
+
+```{r, message = FALSE, warning = FALSE}
+knn.fit = train(x = dat1_train[,1:19],
+                y = dat1_train$gender,
+                method = "knn",
+                preProcess = c("center", "scale"),
+                tuneGrid = data.frame(k = seq(1, 150, by = 2)),
+                trControl = ctrl)
+```
+
 ### Random Forest
 
 ```{r, include = FALSE}
@@ -82,11 +111,31 @@ rf.fit = train(gender~., dat1_train,
 
 ### Extreme Gradient Boosting
 
+```{r}
+# Set tuning grid
+xgbGrid = expand.grid(nrounds = seq(from = 50, to = 200, by = 50),  
+                      max_depth = c(2, 3, 4, 5, 6),
+                      colsample_bytree = seq(0.5, 0.9, length.out = 5),
+                      eta = 0.1,
+                      gamma = 0,
+                      min_child_weight = 1,
+                      subsample = 1)
+
+set.seed(1)
+# Run boosting model using xgboost method
+xgb.fit = train(gender~., dat1_train,
+                trControl = ctrl,
+                tuneGrid = xgbGrid, 
+                method = "xgbTree",
+                metric = "ROC",
+                importance = "impurity")
+```
 
 ## Model Selection 
 
 ```{r}
 resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
+                        QDA = qda.fit, KNN = knn.fit,
                         RF = rf.fit))
 bwplot(resamp)
 ```
