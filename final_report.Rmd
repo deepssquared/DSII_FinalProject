@@ -2,7 +2,7 @@
 title: "Predicting Gender from Risk-Seeking Behaviors"
 author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
 date: "May 14, 2019"
-output: html_document
+output: pdf_document
 ---
 
 ```{r setup, include = FALSE}
