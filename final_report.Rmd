@@ -2,7 +2,7 @@
 title: "Predicting Gender from Risk-Seeking Behaviors"
 author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
 date: "May 14, 2019"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include = FALSE}
@@ -84,7 +84,7 @@ qda.fit <- train(gender~., dat1_train,
 
 ### KNN
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, include = FALSE}
 knn.fit = train(x = dat1_train[,1:19],
                 y = dat1_train$gender,
                 method = "knn",
@@ -111,7 +111,7 @@ svm_linear = train(gender ~ . ,
 
 **Radial**
 
-```{r}
+```{r, include = FALSE}
 # Set tuning grid
 radial_grid = expand.grid(C = exp(seq(-4, 5, len = 15)),
                           sigma = exp(seq(-8, -5, len = 5)))
@@ -148,7 +148,7 @@ rf.fit = train(gender~., dat1_train,
 
 ### Extreme Gradient Boosting
 
-```{r}
+```{r, include = FALSE}
 # Set tuning grid
 xgbGrid = expand.grid(nrounds = seq(from = 50, to = 200, by = 50),  
                       max_depth = c(2, 3, 4, 5, 6),
