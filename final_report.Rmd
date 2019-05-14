@@ -402,6 +402,16 @@ xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance") + theme_bw()
 **Figure 4**
 
 ## Conclusion
+
+The boosting model performed the best in terms of minimizing testing error rates and increased accuracy (it had a testing error rate of 0.21, mean AUC of 0.85, mean sensitivity of 0.84, and mean specificity of 0.71). 
+
+Our models were overall consistent regarding which predictors were more indicative of gender. Most of them concerned interests in specific movie genres or topics (e.g. cars, action movies, war movies). Given that the marketing of such genres are heavily gender-based, this is not surprising. The most important variable among behaviors, according to the boosting model, was taking parents’ advice and alcohol intake, but these were ranked below several variables concerning movie interests.   
+Our predictors lacked collinearity, but even for our simpler models (i.e. logistic regression), our model accuracies were higher than expected. For context, the lowest mean AUC value was 0.83 from Quadratic Discriminant Analysis, which, by rule of thumb, is a good classifier performance. 
+
+One major finding was that interests were more predictive of gender in comparison to behaviors and personalities. This supports the work of sociologists that gender is learned and prescribed by social factors rather than biologically inherited. While additional literature and findings would be necessary for us to make solid conclusions, many of our chosen predictors were suggestive of gender. This could speak to gender roles and behaviors as a whole. Future analyses should include more demographic information and a more diverse sample (in terms of location/age/etc.) in order to yield more generalizable results.
+
+###Limitations
+
 Some of the limitations of this report include translation issues. The original language of the survey was Slovakian, and this could influence interpretations. Additionally, this affects generalizability of findings as the population of this survey was specifically statistics students in Slovakia. The deletion method used would also present issues if data were not missing at random, resulting in bias.
 
 \newpage
