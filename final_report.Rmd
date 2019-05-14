@@ -14,6 +14,7 @@ library(ranger)
 library(xgboost)
 library(pROC)
 library(factoextra)
+library(ggpubr)
 
 
 # Load Datset
@@ -49,8 +50,8 @@ We checked for collinearity of variables via a correlation matrix; as there were
 
 We used an unsupervised learning technique (principle component analysis) to further explore the data. Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
 
-```{r}
-eda <-dat1 
+```{r, echo = FALSE}
+eda = dat1 
 
 #Integer to Categorical Variable
 eda$gender2 <-as.factor(eda$gender)
@@ -125,6 +126,8 @@ fviz_pca_biplot(pca, axes = c(1,2),
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
                 label = c("var"), addEllipses = TRUE, title="PCA by Gender")
 ```
+
+
 ## Method
 
 We selected 19 variables that were related to thrill or risk seeking behaviors. The following variables were included in our analysis:
@@ -259,7 +262,7 @@ svm_radial = train(gender ~ .,
 
 A Random Forest (RF) model was fit with the `caret` package using the `ranger` method. We chose Random Forest as one of our models because it is an ensemble method for classification trees that uses a collection of models to improve the final prediction. Random Forest was also chosen over bagging as an esemble method because it minimizes correlation between the decisions trees that are grown. In our model, 500 decision trees were grown and the gini index was selected as a splitrule. The minimum number of variables to randomly sample at each split (mtry) and minimum node size were tuned using repeated cross-validation in the `caret` packages with ROC as the measure of performance. The best tuning results were `mtry = 2` and `min.node.size = 6`. 
 
-According to the final model, the most important variables for classification are `cars`, `action`, and `war`. The final random forest model was implemented on the test dataset and had an error rate of 18.18%. The error rate of the training dataset was 1.32%. The large difference in error between training and test datasets shows that our random forest model overfit the training dataset. 
+According to the final model, the most important variables for classification are `cars`, `action`, and `war`. The final random forest model was implemented on the test dataset and had an error rate of 18.18%. The error rate of the training dataset was 1.32%. The large difference in error between training and test datasets shows that our random forest model overfit the training dataset. Though the dataset overfits the training set, its test set error is similar to those of other models. One additional disadvantage to random forest is that this method is less interpretable. A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret. 
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
@@ -279,6 +282,8 @@ rf.fit = train(gender~., dat1_train,
 
 ### Extreme Gradient Boosting
 
+An Extreme Gradient Boosting (XGB) model was fit using the `xgboost` packages in `caret`. Gradient Boosting is another ensemble method for classification trees in which multiple trees are grown and used to create a more predictive model. It differs from other ensemble methods such as random forest and bagging because the algorithm focuses on modelling errors from previous models in order to improve the bias-variance tradeoff. We selected the `xgboost` package and algorithm because it performs more efficiently than the `gbm` package discussed in class.
+
 ```{r, include = FALSE, cache = TRUE}
 # Set tuning grid
 xgbGrid = expand.grid(nrounds = seq(from = 50, to = 200, by = 50),  
@@ -297,16 +302,6 @@ xgb.fit = train(gender~., dat1_train,
                 method = "xgbTree",
                 metric = "ROC",
                 importance = "impurity")
-```
-
-## Model Selection 
-
-```{r }
-resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
-                        QDA = qda.fit, KNN = knn.fit,
-                        SVML = svm_linear, SVMR = svm_radial,
-                        RF = rf.fit, XGB = xgb.fit))
-bwplot(resamp)
 ```
 
 ```{r}
@@ -367,6 +362,18 @@ train_table = train_table %>%
   select(Models, TrainError)
 
 cbind(train_table, table) %>% knitr::kable()
+```
+
+Table 1: Testing and training error rates among eight classification models 
+
+## Model Selection 
+
+```{r }
+resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
+                        QDA = qda.fit, KNN = knn.fit,
+                        SVML = svm_linear, SVMR = svm_radial,
+                        RF = rf.fit, XGB = xgb.fit))
+bwplot(resamp)
 ```
 
 
