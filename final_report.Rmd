@@ -31,6 +31,7 @@ set.seed(1)
 row_train = createDataPartition(y = dat1$gender, p = 0.8, list = FALSE)
 dat1_train = dat1[row_train,]
 dat1_test = dat1[-row_train,]
+dat1$smoking <-ifelse(dat1$smoking==0, 1, dat1$smoking)
 
 # Set up cross-validation for tuning parameters
 ctrl = trainControl(method = "repeatedcv",
