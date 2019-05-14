@@ -278,7 +278,7 @@ A Random Forest (RF) model was fit with the `caret` package using the `ranger` m
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
-rf.grid = expand.grid(mtry = seq(from = 2, to = 6, length.out = 5),
+rf.grid = expand.grid(mtry = 2:6,
                       splitrule = "gini",
                       min.node.size = 1:10)
 
