@@ -313,7 +313,7 @@ xgb.fit = train(gender~., dat1_train,
                 importance = "impurity")
 ```
 
-```{r echo = FALSE, cache = TRUE}}
+```{r echo = FALSE, cache = TRUE}
 # List of models
 models = list(log.fit, lda.fit, qda.fit, knn.fit, 
               svm_linear, svm_radial, rf.fit, xgb.fit)
