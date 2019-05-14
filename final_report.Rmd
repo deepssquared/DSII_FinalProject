@@ -15,7 +15,7 @@ library(xgboost)
 library(pROC)
 library(factoextra)
 library(ggpubr)
-
+library(Ckmeans.1d.dp)
 
 # Load Datset
 dat1 = read_csv("./final.csv") %>%
