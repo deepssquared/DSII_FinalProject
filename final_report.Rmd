@@ -387,6 +387,7 @@ resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
                         RF = rf.fit, XGB = xgb.fit))
 bwplot(resamp)
 ```
+  
 **Figure 3: Comparison of Model Fits**
 
 Each model was resampled through the `caret` package and the results are shown in the figure above. Overall, all of our models fit well with most ROC's ranging around 80%. The sensitivity and specificity measures have more variability and fall within a wider range. XGBoost and Random Forest perform the best and they perform as well as each other. The median ROC of XGBoost is higher while the means are very similar. The median sensitivity of XGBoost is slightly lower than Random Forest, but the median specificity of XGBoost is higher and the interquartile range is narrower. On the other hand, QDA performed the worst. The median and mean ROC were lowest as was sensitivity. While QDA did not have the lowest specificity, the interquartile range is wide.
