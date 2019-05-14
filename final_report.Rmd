@@ -378,7 +378,7 @@ bwplot(resamp)
 
 ## Final Model
 
-Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classification are `cars`, `action`, and `war`. 
+Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classifying individuals by gender were interest in cars, action movies, and war movies.
 A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret. 
 
 ```{r, echo = FALSE}
