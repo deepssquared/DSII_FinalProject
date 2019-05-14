@@ -2,11 +2,15 @@
 title: "Predicting Gender from Risk-Seeking Behaviors"
 author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
 date: "May 14, 2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(warning  = FALSE)
 library(tidyverse)
 library(dplyr)
 library(caret)
@@ -121,7 +125,7 @@ eda_pca$gender2 <-NULL
 eda_pca$gender <-ifelse(eda_pca$gender=="female", 0, 1)
 
 pca <- prcomp(eda_pca)
-pca$rotation
+
 
 fviz_pca_biplot(pca, axes = c(1,2), 
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
@@ -132,28 +136,34 @@ fviz_pca_biplot(pca, axes = c(1,2),
 ## Method
 
 We selected 19 variables that were related to thrill or risk seeking behaviors. The following variables were included in our analysis:
+
 *  Interest in: (ranked 1-5 from "don't enjoy at all" to "enjoy very much")
-  +  Metal, hard rock music
-  +  Punk music
-  +  Horror movies
-  +  War movies
-  +  Action movies
-  +  Outdoor activities
-  +  Sport at a competitive level
-  +  Adrenaline sports
-  +  Cars
+     +  Metal, hard rock music
+     +  Punk music
+     +  Horror movies
+     +  War movies
+     +  Action movies
+     +  Outdoor activities
+     +  Sport at a competitive level
+     +  Adrenaline sports
+     +  Cars
+  
 *  Fears of public speaking (ranked 1-5 from "not afraid at all" to "very afraid of")
+
 *  Smoking habits (categorical with 4 levels: "never smoked", "tried smoking", "former smoker", "current smoker")
-*  Drinking habits (categorical with 3 levels: "never", "social drinker", "drink a lot")
+
+* Drinking habits (categorical with 3 levels: "never", "social drinker", "drink a lot")
+
 *  Statements about personality traits: (ranked 1-5 from "strongly disagree" to "strongly agree")
-  +  I damaged things in the past when I get angry
-  +  I used to cheat at school
-  +  I prefer big dangerous dogs to smaller, calmer dogs
-  +  I try to do tasks as soon as possible and not leave them until last minute
-  +  I'm not afraid to give my opinion if I feel strongly about something
-  +  I always listen to my parents' advice
+    +  I damaged things in the past when I get angry
+    +  I used to cheat at school
+    +  I prefer big dangerous dogs to smaller, calmer dogs
+    +  I try to do tasks as soon as possible and not leave them until last minute
+    +  I'm not afraid to give my opinion if I feel strongly about something
+    +  I always listen to my parents' advice
   
 Variables that were ranked on a scale from 1-5 were considered as continous responses. After splitting the data into training and testing sets using an 80/20 split, we fit the following models to the training data:
+
 *  Logistic regression
 *  Discriminant analysis (linear and quadratic)
 *  KNN
@@ -166,7 +176,7 @@ Training and test error were calculated for each model to evaluate overfitting. 
 
 ### Logistic Regression
 
-Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, it does not contain any tuning parameters. When examining the predictor parameters, the following ones had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`.        
+Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, via the `caret` package, it does not contain any tuning parameters. When examining the predictor parameters, the following ones had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`.        
 
 
 ```{r, include = FALSE}
@@ -182,7 +192,7 @@ log.fit = train(gender~., dat1_train,
 
 **Linear**
 
-Linear discriminant analysis assumes normally distributed features. LDA does not contain any tuning parameters and is strong when considering more than 2 predictors. Additionally, it works well when the classes are well separated and Gaussian distribution assumptions are applied. When ranking variables (using the function `varImp()`), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
+For LDA, we used the `caret` package. Linear discriminant analysis assumes normally distributed features. LDA does not contain any tuning parameters and is strong when considering more than 2 predictors. Additionally, it works well when the classes are well separated and Gaussian distribution assumptions are applied. When ranking variables (using the function `varImp()`), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -195,7 +205,7 @@ lda.fit = train(gender~., dat1_train,
 
 **Quadratic**
 
-Just like LDA, QDA works well when the classes are well separated and Gaussian distribution (normally -distributed) assumptions are applied. However, unlike LDA, it assumes that each class has its own covariance matrix. QDA does not contain any tuning parameters. When ranking variables (using the function varImp()), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
+For QDA, we used the `caret` package. Just like LDA, QDA works well when the classes are well separated and Gaussian distribution (normally -distributed) assumptions are applied. However, unlike LDA, it assumes that each class has its own covariance matrix. QDA does not contain any tuning parameters. When ranking variables (using the function varImp()), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -303,7 +313,7 @@ xgb.fit = train(gender~., dat1_train,
                 importance = "impurity")
 ```
 
-```{r}
+```{r echo = FALSE, cache = TRUE}
 # List of models
 models = list(log.fit, lda.fit, qda.fit, knn.fit, 
               svm_linear, svm_radial, rf.fit, xgb.fit)
@@ -378,7 +388,7 @@ bwplot(resamp)
 
 ## Final Model
 
-Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classification are `cars`, `action`, and `war`. 
+Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classifying individuals by gender were interest in cars, action movies, and war movies.
 A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret. 
 
 ```{r, echo = FALSE}
