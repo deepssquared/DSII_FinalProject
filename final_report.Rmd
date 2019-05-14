@@ -13,6 +13,8 @@ library(caret)
 library(ranger)
 library(xgboost)
 library(pROC)
+library(factoextra)
+
 
 # Load Datset
 dat1 = read_csv("./final.csv") %>%
@@ -42,6 +44,11 @@ For our analysis, we used a data set consisting of 1,010 responses from a 2013 s
 After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.
 
 ## Data Exploration
+
+We checked for collinearity of variables via a correlation matrix; as there were no significant correlations between any predictors, all of our original variables were retained. We stratified responses by gender and visualized them in histograms. Some predictors have more skewed distributions by gender compared to others (e.g. cars, war movies). Other variables such as alcohol use and going outdoors were more evenly distributed by gender. 
+
+We used an unsupervised learning technique (principle component analysis) to further explore the data. Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
+
 ```{r}
 eda <-dat1 
 
@@ -108,7 +115,6 @@ plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
 
 ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, legend = NULL, common.legend=TRUE)
 
-library(factoextra)
 eda_pca <-eda
 eda_pca$gender2 <-NULL
 
