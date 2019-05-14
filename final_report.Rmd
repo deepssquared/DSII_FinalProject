@@ -115,7 +115,7 @@ qda.fit <- train(gender~., dat1_train,
 
 ### KNN
 
-The method of K-nearest neighbors makes no assumptions about the shape of the decision boundary; therefore, if the decision boundary is highly non-linear then this model will perform better than others. This model has one tuning parameter, K. An optimal value of K was chosen by cross-validation using the `train()` function in the `caret package` by specifying the tuning grid.
+The method of K-nearest neighbors makes no assumptions about the shape of the decision boundary; therefore, if the decision boundary is highly non-linear then this model will perform better than others. This model has one tuning parameter, K, the number of closest training points. An optimal value of K was chosen by repeated cross-validation using the `train()` function in the `caret` package by specifying the tuning grid.
 
 ```{r, message = FALSE, warning = FALSE, include = FALSE, cache = TRUE}
 knn.fit = train(x = dat1_train[,1:19],
@@ -129,6 +129,8 @@ knn.fit = train(x = dat1_train[,1:19],
 ### SVM 
 
 **Linear**
+
+
 
 ```{r, include = FALSE, cache = TRUE}
 set.seed(1)
