@@ -14,6 +14,7 @@ library(ranger)
 library(xgboost)
 library(pROC)
 library(factoextra)
+library(ggpubr)
 
 
 # Load Datset
@@ -164,6 +165,9 @@ Training and test error were calculated for each model to evaluate overfitting. 
 
 ### Logistic Regression
 
+Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, it does not contain any tuning parameters. When examining the predictor parameters, the following ones had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`.        
+
+
 ```{r, include = FALSE}
 set.seed(1) 
 # Fit a logistic regression 
@@ -177,6 +181,8 @@ log.fit = train(gender~., dat1_train,
 
 **Linear**
 
+Linear discriminant analysis assumes normally distributed features. LDA does not contain any tuning parameters and is strong when considering more than 2 predictors. Additionally, it works well when the classes are well separated and Gaussian distribution assumptions are applied. When ranking variables (using the function `varImp()`), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
+
 ```{r, include = FALSE}
 set.seed(1) 
 # Fit LDA model
@@ -187,6 +193,8 @@ lda.fit = train(gender~., dat1_train,
 ```
 
 **Quadratic**
+
+Just like LDA, QDA works well when the classes are well separated and Gaussian distribution (normally -distributed) assumptions are applied. However, unlike LDA, it assumes that each class has its own covariance matrix. QDA does not contain any tuning parameters. When ranking variables (using the function varImp()), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -199,7 +207,7 @@ qda.fit <- train(gender~., dat1_train,
 
 ### KNN
 
-The method of K-nearest neighbors makes no assumptions about the shape of the decision boundary; therefore, if the decision boundary is highly non-linear then this model will perform better than others. This model has one tuning parameter, K, the number of closest training points. An optimal value of K was chosen by repeated cross-validation using the `train()` function in the `caret` package by specifying the tuning grid.
+The method of K-nearest neighbors makes no assumptions about the shape of the decision boundary; therefore, if the decision boundary is highly non-linear then this model will perform better than others. This model has one tuning parameter, K, the number of closest training points. An optimal value of K was chosen by repeated cross-validation using the `train()` function in the `caret` package by specifying the tuning grid. One drawback of this model is that we cannot assess variable importance.
 
 ```{r, message = FALSE, warning = FALSE, include = FALSE, cache = TRUE}
 knn.fit = train(x = dat1_train[,1:19],
@@ -214,6 +222,7 @@ knn.fit = train(x = dat1_train[,1:19],
 
 **Linear**
 
+The support vector classifier has one tuning parameter, C. We used the `train()` function in the `caret` package to choose the best C by cross-validation. Since the support vector classifier is a hyperplane, the model assumes that the decision boundary is linear, which is a potential drawback if the decision boundary is non-linear.
 
 
 ```{r, include = FALSE, cache = TRUE}
@@ -229,6 +238,8 @@ svm_linear = train(gender ~ . ,
 ```
 
 **Radial**
+
+The support vector machine with a radial kernel has two tuning parameters. One is C, the cost parameter, and the other is the degree of non-linearity sigma. We used the `train()` function in the `caret` packers to choose these parameters by cross-validation. This model assumes a non-linear boundary.
 
 ```{r, include = FALSE, cache = TRUE}
 # Set tuning grid
