@@ -170,7 +170,7 @@ xgb.fit = train(gender~., dat1_train,
 
 ## Model Selection 
 
-```{r}
+```{r }
 resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
                         QDA = qda.fit, KNN = knn.fit,
                         SVML = svm_linear, SVMR = svm_radial,
@@ -186,3 +186,6 @@ bwplot(resamp)
 \newpage
 
 ## Appendix
+
+
+
