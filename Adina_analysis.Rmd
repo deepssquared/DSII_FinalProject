@@ -116,7 +116,7 @@ subsample - 1
 # Variable importance
 xgb_imp = xgb.importance(feature_names = xgb.fit$finalModel$feature_names,
                          model = xgb.fit$finalModel)
-xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance")
+xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance") + theme_bw()
 varImp(xgb.fit)
 ```
 
