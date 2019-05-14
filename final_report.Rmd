@@ -178,6 +178,66 @@ resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
 bwplot(resamp)
 ```
 
+```{r}
+# List of models
+models = list(log.fit, lda.fit, qda.fit, knn.fit, 
+              svm_linear, svm_radial, rf.fit, xgb.fit)
+
+# Function which will succinctly summarize confusion matrix results in table format (although specified for test data also works with training data)
+test_summary = function(data, model){
+  # Fit predictions using specified model
+  pred = predict(model, newdata = data)
+  
+  # Confusion Matrix
+  test_matrix = confusionMatrix(data = pred,
+                reference = factor(data$gender),
+                positive = "male")
+  
+  # First join table
+  join1 = test_matrix$overall %>% tibble() %>% 
+    rename("Test" = ".") %>% 
+    mutate(Measure = c("Accuracy", "Kappa", "AccuracyLower", "AccuracyUpper",
+                     "AccuracyNull", "AccuracyPValue", "McnemarPValue")) %>% 
+    spread(key = Measure, value = Test) %>% 
+    mutate(TestError = 1 - Accuracy) %>% 
+    select(Accuracy, TestError)
+
+  return(join1)
+}
+```
+
+```{r, echo = FALSE}
+# Initialize table for iteration
+table = tibble()
+
+# Apply function to all models with testing data
+for (i in 1:length(models)) {
+  temp = test_summary(dat1_test, models[[i]])
+  table = rbind(table, temp)
+}
+
+table = table %>% 
+  select(TestError)
+
+# Initialize table for iteration with training data
+train_table = list()
+
+# Apply function to all models with training data
+for (i in 1:length(models)) {
+  temp = test_summary(dat1_train, models[[i]])
+  train_table = rbind(train_table, temp)
+}
+
+train_table = train_table %>% 
+  select(TestError) %>% 
+  rename(TrainError = TestError) %>% 
+  mutate(Models = c("Logistic", "LDA", "QDA", "KNN", "SVM Linear", 
+                    "SVM Radial", "Random Forest", "XGBoost")) %>% 
+  select(Models, TrainError)
+
+cbind(train_table, table) %>% knitr::kable()
+```
+
 
 ## Final Model
 
