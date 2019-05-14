@@ -73,61 +73,61 @@ eda$gender2 <-as.factor(eda$gender)
 levels(eda$gender2) <-c("female", "male")
 
 plot2 <-ggplot(eda, aes(x=metal_or_hardrock, fill=gender2)) +
-    geom_histogram(binwidth=1, color="black")
+    geom_histogram(binwidth=1, color="black") + labs(x = "Metal/Hardrock") + theme(axis.title.x=element_text(size=6))
 
 plot3 <-ggplot(eda, aes(x=punk, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot4 <-ggplot(eda, aes(x=horror, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot5 <-ggplot(eda, aes(x=thriller, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot6 <-ggplot(eda, aes(x=war, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot7 <-ggplot(eda, aes(x=action, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot8 <-ggplot(eda, aes(x=countryside_outdoors, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Outdoors") + theme(axis.title.x=element_text(size=6))
 
 plot9 <-ggplot(eda, aes(x=active_sport, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot10 <-ggplot(eda, aes(x=adrenaline_sports, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot11 <-ggplot(eda, aes(x=cars, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot12 <-ggplot(eda, aes(x=fear_of_public_speaking, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Public Speaking") + theme(axis.title.x=element_text(size=6))
 
 plot13 <-ggplot(eda, aes(x=smoking, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot14 <-ggplot(eda, aes(x=alcohol, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot15 <-ggplot(eda, aes(x=criminal_damage, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot16 <-ggplot(eda, aes(x=cheating_in_school, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Cheating") + theme(axis.title.x=element_text(size=6))
 
 plot17 <-ggplot(eda, aes(x=small_big_dogs, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Dangerous Dogs") + theme(axis.title.x=element_text(size=6))
 
 plot18 <-ggplot(eda, aes(x=prioritising_workload, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot19 <-ggplot(eda, aes(x=assertiveness, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
-    geom_histogram(binwidth=1, colour="black")
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 #plot1, plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10,
 # plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20
@@ -151,7 +151,7 @@ pca$rotation
 
 fviz_pca_biplot(pca, axes = c(1,2), 
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
-                label = c("var"), addEllipses = TRUE)
+                label = c("var"), addEllipses = TRUE, title="PCA by Gender")
 
 pca$sdev
 pca.var =pca$sdev ^2
@@ -159,6 +159,10 @@ pve=pca.var/sum(pca.var )
 pve
 ```
 
+```{r}
+fviz_contrib(pca, choice = "var", axes = 1) %>% plot()
+fviz_contrib(pca, choice = "var", axes = 2) %>% plot()
 
+```
 
 
