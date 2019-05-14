@@ -50,9 +50,9 @@ After sectioning the data accordingly, we counted missing values to determine if
 
 ## Data Exploration
 
-We checked for collinearity of variables via a correlation matrix; as there were no significant correlations between any predictors, all of our original variables were retained. We stratified responses by gender and visualized them in histograms. Some predictors have more skewed distributions by gender compared to others (e.g. cars, war movies). Other variables such as alcohol use and going outdoors were more evenly distributed by gender. 
+We checked for collinearity of variables via a correlation matrix; as there were no significant correlations between any predictors, all of our original variables were retained. We stratified responses by gender and visualized them in histograms (fig. 1). Some predictors have more skewed distributions by gender compared to others (e.g. cars, war movies). Other variables such as alcohol use and going outdoors were more evenly distributed by gender. 
 
-We used an unsupervised learning technique (principle component analysis) to further explore the data. Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
+We used an unsupervised learning technique (principle component analysis) to further explore the data (fig. 2). Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
 
 ```{r, echo = FALSE}
 eda = dat1 
@@ -119,7 +119,10 @@ plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
     geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
 
 ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, legend = NULL, common.legend=TRUE)
+```
+**Figure 1**
 
+```{r}
 eda_pca <-eda
 eda_pca$gender2 <-NULL
 eda_pca$gender <-ifelse(eda_pca$gender=="female", 0, 1)
@@ -131,7 +134,7 @@ fviz_pca_biplot(pca, axes = c(1,2),
                 habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
                 label = c("var"), addEllipses = TRUE, title="PCA by Gender")
 ```
-
+**Figure 2**
 
 ## Method
 
@@ -176,8 +179,7 @@ Training and test error were calculated for each model to evaluate overfitting. 
 
 ### Logistic Regression
 
-Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, via the `caret` package, it does not contain any tuning parameters. When examining the predictor parameters, the following ones had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`.        
-
+Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, via the `caret` package, it does not contain any tuning parameters. When examining the predictor parameters, the following variables had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`, indicating that these are important predictors of gender.        
 
 ```{r, include = FALSE}
 set.seed(1) 
