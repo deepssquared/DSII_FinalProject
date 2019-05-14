@@ -13,6 +13,8 @@ library(caret)
 library(ranger)
 library(xgboost)
 library(pROC)
+library(factoextra)
+
 
 # Load Datset
 dat1 = read_csv("./final.csv") %>%
@@ -42,6 +44,11 @@ For our analysis, we used a data set consisting of 1,010 responses from a 2013 s
 After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.
 
 ## Data Exploration
+
+We checked for collinearity of variables via a correlation matrix; as there were no significant correlations between any predictors, all of our original variables were retained. We stratified responses by gender and visualized them in histograms. Some predictors have more skewed distributions by gender compared to others (e.g. cars, war movies). Other variables such as alcohol use and going outdoors were more evenly distributed by gender. 
+
+We used an unsupervised learning technique (principle component analysis) to further explore the data. Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
+
 ```{r}
 eda <-dat1 
 
@@ -108,7 +115,6 @@ plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
 
 ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, legend = NULL, common.legend=TRUE)
 
-library(factoextra)
 eda_pca <-eda
 eda_pca$gender2 <-NULL
 
@@ -156,6 +162,9 @@ Training and test error were calculated for each model to evaluate overfitting. 
 
 ### Logistic Regression
 
+Logistic regression assumes independent observations, a sufficiently large sample size, and a linear relationship between the predictors and the log-odds of the outcome. As we used simple logistic regression, it does not contain any tuning parameters. When examining the predictor parameters, the following ones had a p-value of less than 0.001: `cars`, `war`, `action`, and `metal_or_hardrock`.        
+
+
 ```{r, include = FALSE}
 set.seed(1) 
 # Fit a logistic regression 
@@ -169,6 +178,8 @@ log.fit = train(gender~., dat1_train,
 
 **Linear**
 
+Linear discriminant analysis assumes normally distributed features. LDA does not contain any tuning parameters and is strong when considering more than 2 predictors. Additionally, it works well when the classes are well separated and Gaussian distribution assumptions are applied. When ranking variables (using the function `varImp()`), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
+
 ```{r, include = FALSE}
 set.seed(1) 
 # Fit LDA model
@@ -179,6 +190,8 @@ lda.fit = train(gender~., dat1_train,
 ```
 
 **Quadratic**
+
+Just like LDA, QDA works well when the classes are well separated and Gaussian distribution (normally -distributed) assumptions are applied. However, unlike LDA, it assumes that each class has its own covariance matrix. QDA does not contain any tuning parameters. When ranking variables (using the function varImp()), the most important ones were as follows: `cars`, `war`, `action`, `active_sport`, and `thriller`. 
 
 ```{r, include = FALSE}
 set.seed(1) 
@@ -240,6 +253,10 @@ svm_radial = train(gender ~ .,
 
 
 ### Random Forest
+
+A Random Forest (RF) model was fit with the `caret` package using the `ranger` method. We chose Random Forest as one of our models because it is an ensemble method for classification trees that uses a collection of models to improve the final prediction. Random Forest was also chosen over bagging as an esemble method because it minimizes correlation between the decisions trees that are grown. In our model, 500 decision trees were grown and the gini index was selected as a splitrule. The minimum number of variables to randomly sample at each split (mtry) and minimum node size were tuned using repeated cross-validation in the `caret` packages with ROC as the measure of performance. The best tuning results were `mtry = 2` and `min.node.size = 6`. 
+
+According to the final model, the most important variables for classification are `cars`, `action`, and `war`. The final random forest model was implemented on the test dataset and had an error rate of 18.18%. The error rate of the training dataset was 1.32%. The large difference in error between training and test datasets shows that our random forest model overfit the training dataset. 
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
@@ -352,7 +369,7 @@ cbind(train_table, table) %>% knitr::kable()
 
 ## Final Model
 
-Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. 
+Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classification are `cars`, `action`, and `war`. 
 
 ```{r, echo = FALSE}
 # Variable Importance Graph
