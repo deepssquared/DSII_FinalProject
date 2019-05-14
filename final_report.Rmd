@@ -122,7 +122,7 @@ ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11
 ```
 **Figure 1: Variable Distributions by Gender**
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.width = 10, fig.height=6}
 eda_pca <-eda
 eda_pca$gender2 <-NULL
 eda_pca$gender <-ifelse(eda_pca$gender=="female", 0, 1)
@@ -534,6 +534,16 @@ resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
 bwplot(resamp)
 ```
 
+**Random forest mtry tuning results**
+```{r, echo = FALSE}
+knitr::include_graphics("rf_mtry_tune.png")
+```
+
+**XG Boost tuning results**
+```{r, echo = FALSE}
+knitr::include_graphics("tuning1_boost.jpeg")
+knitr::include_graphics("tuning_performance.jpeg")
+```
 
 
 
