@@ -219,6 +219,7 @@ knn.fit = train(x = dat1_train[,1:19],
 
 **Linear**
 
+The support vector classifier has one tuning parameter, C. We used the `train()` function in the `caret` package to choose the best C by cross-validation. Since the support vector classifier is a hyperplane, the model assumes that the decision boundary is linear, which is a potential drawback if the decision boundary is non-linear.
 
 
 ```{r, include = FALSE, cache = TRUE}
@@ -234,6 +235,8 @@ svm_linear = train(gender ~ . ,
 ```
 
 **Radial**
+
+The support vector machine with a radial kernel has two tuning parameters. One is C, the cost parameter, and the other is the degree of non-linearity sigma. We used the `train()` function in the `caret` packers to choose these parameters by cross-validation. This model assumes a non-linear boundary.
 
 ```{r, include = FALSE, cache = TRUE}
 # Set tuning grid
