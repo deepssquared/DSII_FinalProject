@@ -392,7 +392,7 @@ Each model was resampled through the `caret` package and the results are shown i
 
 ## Final Model
 
-Based off of our resampling results through the `caret` package, we chose XGBoost as our final model. Althought this model performs as well as random forest, we chose this model because it reported a higher specificity. Furthermore, from Table 1, the Random Forest model seemed to overfit the training data with a training error rate of 1.32%. From XGBoost, the most important variables for classifying individuals by gender were based off their interest in cars, action movies, and war movies (Figure #). 
+Based off of our resampling results through the `caret` package, we chose XGBoost as our final model. Althought this model performs as well as random forest, we chose this model because it reported a higher specificity. Furthermore, from Table 1, the Random Forest model seemed to overfit the training data with a training error rate of 1.32%. From XGBoost, the most important variables for classifying individuals by gender were based off their interest in cars, action movies, and war movies (fig. 3). 
 
 Even though we pick boosting for our a final model, there are limitations to picking this method. A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret.
 
