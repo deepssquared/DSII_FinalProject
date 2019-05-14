@@ -138,15 +138,15 @@ fviz_pca_biplot(pca, axes = c(1,2),
 We selected 19 variables that were related to thrill or risk seeking behaviors. The following variables were included in our analysis:
 
 *  Interest in: (ranked 1-5 from "don't enjoy at all" to "enjoy very much")
-  +  Metal, hard rock music
-  +  Punk music
-  +  Horror movies
-  +  War movies
-  +  Action movies
-  +  Outdoor activities
-  +  Sport at a competitive level
-  +  Adrenaline sports
-  +  Cars
+     +  Metal, hard rock music
+     +  Punk music
+     +  Horror movies
+     +  War movies
+     +  Action movies
+     +  Outdoor activities
+     +  Sport at a competitive level
+     +  Adrenaline sports
+     +  Cars
   
 *  Fears of public speaking (ranked 1-5 from "not afraid at all" to "very afraid of")
 
@@ -155,12 +155,12 @@ We selected 19 variables that were related to thrill or risk seeking behaviors. 
 * Drinking habits (categorical with 3 levels: "never", "social drinker", "drink a lot")
 
 *  Statements about personality traits: (ranked 1-5 from "strongly disagree" to "strongly agree")
-  +  I damaged things in the past when I get angry
-  +  I used to cheat at school
-  +  I prefer big dangerous dogs to smaller, calmer dogs
-  +  I try to do tasks as soon as possible and not leave them until last minute
-  +  I'm not afraid to give my opinion if I feel strongly about something
-  +  I always listen to my parents' advice
+    +  I damaged things in the past when I get angry
+    +  I used to cheat at school
+    +  I prefer big dangerous dogs to smaller, calmer dogs
+    +  I try to do tasks as soon as possible and not leave them until last minute
+    +  I'm not afraid to give my opinion if I feel strongly about something
+    +  I always listen to my parents' advice
   
 Variables that were ranked on a scale from 1-5 were considered as continous responses. After splitting the data into training and testing sets using an 80/20 split, we fit the following models to the training data:
 
@@ -313,7 +313,7 @@ xgb.fit = train(gender~., dat1_train,
                 importance = "impurity")
 ```
 
-```{r echo = FALSE, cache = TRUE}}
+```{r echo = FALSE, cache = TRUE}
 # List of models
 models = list(log.fit, lda.fit, qda.fit, knn.fit, 
               svm_linear, svm_radial, rf.fit, xgb.fit)
