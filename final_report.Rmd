@@ -161,6 +161,10 @@ svm_radial = train(gender ~ .,
 
 ### Random Forest
 
+A Random Forest (RF) model was fit with the `caret` package using the `ranger` method. We chose Random Forest as one of our models because it is an ensemble method for classification trees that uses a collection of models to improve the final prediction. Random Forest was also chosen over bagging as an esemble method because it minimizes correlation between the decisions trees that are grown. In our model, 500 decision trees were grown and the gini index was selected as a splitrule. The minimum number of variables to randomly sample at each split (mtry) and minimum node size were tuned using repeated cross-validation in the `caret` packages with ROC as the measure of performance. The best tuning results were `mtry = 2` and `min.node.size = 6`. 
+
+According to the final model, the most important variables for classification are `cars`, `action`, and `war`. The final random forest model was implemented on the test dataset and had an error rate of 18.18%. The error rate of the training dataset was 1.32%. The large difference in error between training and test datasets shows that our random forest model overfit the training dataset. 
+
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
 rf.grid = expand.grid(mtry = 1:5,
@@ -272,7 +276,7 @@ cbind(train_table, table) %>% knitr::kable()
 
 ## Final Model
 
-Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. 
+Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classification are `cars`, `action`, and `war`. 
 
 ```{r, echo = FALSE}
 # Variable Importance Graph
