@@ -168,3 +168,8 @@ plot(roc.qda, legacy.axes = TRUE, print.auc = TRUE)
 plot(smooth(roc.qda), col = 4, add = TRUE)
 
 ```
+
+
+
+Some of the limitations of this report include translation issues. The original language of the survey was Slovakian, and this could influence interpretations. Additionally, this affects generalizability of findings as the population of this survey was specifically statistics students in Slovakia. The deletion method used would also present issues if data were not missing at random, resulting in bias.
+
