@@ -260,9 +260,7 @@ svm_radial = train(gender ~ .,
 
 ### Random Forest
 
-A Random Forest (RF) model was fit with the `caret` package using the `ranger` method. We chose Random Forest as one of our models because it is an ensemble method for classification trees that uses a collection of models to improve the final prediction. Random Forest was also chosen over bagging as an esemble method because it minimizes correlation between the decisions trees that are grown. In our model, 500 decision trees were grown and the gini index was selected as a splitrule. The minimum number of variables to randomly sample at each split (mtry) and minimum node size were tuned using repeated cross-validation in the `caret` packages with ROC as the measure of performance. The best tuning results were `mtry = 2` and `min.node.size = 6`. 
-
-According to the final model, the most important variables for classification are `cars`, `action`, and `war`. The final random forest model was implemented on the test dataset and had an error rate of 18.18%. The error rate of the training dataset was 1.32%. The large difference in error between training and test datasets shows that our random forest model overfit the training dataset. Though the dataset overfits the training set, its test set error is similar to those of other models. One additional disadvantage to random forest is that this method is less interpretable. A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret. 
+A Random Forest (RF) model was fit with the `caret` package using the `ranger` method. We chose Random Forest as one of our models because it is an ensemble method for classification trees that uses a collection of models to improve the final prediction. Random Forest was also chosen over bagging as an esemble method because it minimizes correlation between the decisions trees that are grown. In our model, 500 decision trees were grown and the gini index was selected as a splitrule. The minimum number of variables to randomly sample at each split (mtry) and minimum node size were tuned using repeated cross-validation in the `caret` packages with ROC as the measure of performance. The best tuning results were `mtry = 2` and `min.node.size = 6`. According to the final model, the most important variables for classification are `cars`, `action`, and `war`. 
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
@@ -282,7 +280,7 @@ rf.fit = train(gender~., dat1_train,
 
 ### Extreme Gradient Boosting
 
-An Extreme Gradient Boosting (XGB) model was fit using the `xgboost` packages in `caret`. Gradient Boosting is another ensemble method for classification trees in which multiple trees are grown and used to create a more predictive model. It differs from other ensemble methods such as random forest and bagging because the algorithm focuses on modelling errors from previous models in order to improve the bias-variance tradeoff. We selected the `xgboost` package and algorithm because it performs more efficiently than the `gbm` package discussed in class.
+An Extreme Gradient Boosting (XGB) model was fit using the `xgboost` packages in `caret`. Gradient Boosting is another ensemble method for classification trees. It differs from other ensemble methods such as random forest because the algorithm focuses on modelling errors from previous models in order to improve the bias-variance tradeoff. We selected the `xgboost` package and algorithm because it performs more efficiently than the `gbm` package discussed in class. Multiple parameters were tuned using repeated cross-validation with ROC as the unit of measurement. The final model selected `nrounds = 100`, `max_depth = 2`, `eta = 0.1`, `colsample_bytree = 0.8`. The final model showed that `cars`, `action`, and `war` were the most important variables for classifying gender. 
 
 ```{r, include = FALSE, cache = TRUE}
 # Set tuning grid
@@ -368,7 +366,7 @@ Table 1: Testing and training error rates among eight classification models
 
 ## Model Selection 
 
-```{r }
+```{r, echo = FALSE}
 resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
                         QDA = qda.fit, KNN = knn.fit,
                         SVML = svm_linear, SVMR = svm_radial,
@@ -380,6 +378,7 @@ bwplot(resamp)
 ## Final Model
 
 Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. The most important variables for classification are `cars`, `action`, and `war`. 
+A classification tree by itself is very easy to interpret, however the use of ensemble methods utilizes multiple trees making a final model more difficult to visualize or interpret. 
 
 ```{r, echo = FALSE}
 # Variable Importance Graph
