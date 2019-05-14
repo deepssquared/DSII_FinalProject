@@ -118,6 +118,7 @@ ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11
 
 eda_pca <-eda
 eda_pca$gender2 <-NULL
+eda_pca$gender <-ifelse(eda_pca$gender=="female", 0, 1)
 
 pca <- prcomp(eda_pca)
 pca$rotation
