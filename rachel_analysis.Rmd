@@ -43,6 +43,7 @@ model_knn = train(x = dat1_train[,1:19],
                   trControl = ctrl)
 
 ggplot(model_knn)
+model_knn$bestTune
 ```
 
 Test model performance (test set)
