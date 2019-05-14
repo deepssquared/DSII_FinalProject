@@ -2,7 +2,7 @@
 title: "Predicting Gender from Risk-Seeking Behaviors"
 author: "Deepika Dilip, Rachel Tsong, and Adina Zhang"
 date: "May 14, 2019"
-output: pdf_document
+output: html_document
 ---
 
 ```{r setup, include = FALSE}
@@ -37,7 +37,7 @@ One public health phenomenon that has been the subject of debate is the “Gende
 
 **Young People's Survey**
 
-For our analysis, we used a data set consisting of 1,010 responses from a 2013 survey administered among statistics students and their friends at Comenius University in Bratislava, Slovakia. This dataset is available to download from Kaggle. The survey consisted of 150 items including music and movie preferences, hobbies and interests, phobias, health habits, personality traits, views on life, and opinions, spending habits, and demographics. To test our hypotheses, we selected 19 variables that would demonstrate risk-seeking behavior.
+For our analysis, we used a data set consisting of 1,010 responses from a 2013 survey administered among statistics students and their friends at Comenius University in Bratislava, Slovakia. This dataset is available to download from Kaggle. The survey consisted of 150 items including music and movie preferences, hobbies and interests, phobias, health habits, personality traits, views on life, and opinions, spending habits, and demographics. Most of the items were presented as a five-point Likert scale indicating how much a respondent agreed to the statement. Participants were given the survey in both electronic and paper formats.To test our hypotheses, we selected 19 variables that would demonstrate risk-seeking behavior.
 
 After sectioning the data accordingly, we counted missing values to determine if that could affect our results. When only completed responses were considered (i.e. having values for every variable), we had a sample size of 942; 6.7% of the data was missing. As this value was less than 10%, we decided not to address this via imputation and opted for a deletion method (complete-case analysis). The limitations of this method will be addressed in the discussion.
 
@@ -84,7 +84,7 @@ qda.fit <- train(gender~., dat1_train,
 
 ### KNN
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, include = FALSE}
 knn.fit = train(x = dat1_train[,1:19],
                 y = dat1_train$gender,
                 method = "knn",
@@ -111,7 +111,7 @@ svm_linear = train(gender ~ . ,
 
 **Radial**
 
-```{r}
+```{r, include = FALSE}
 # Set tuning grid
 radial_grid = expand.grid(C = exp(seq(-4, 5, len = 15)),
                           sigma = exp(seq(-8, -5, len = 5)))
@@ -148,7 +148,7 @@ rf.fit = train(gender~., dat1_train,
 
 ### Extreme Gradient Boosting
 
-```{r}
+```{r, include = FALSE}
 # Set tuning grid
 xgbGrid = expand.grid(nrounds = seq(from = 50, to = 200, by = 50),  
                       max_depth = c(2, 3, 4, 5, 6),
