@@ -13,6 +13,8 @@ library(caret)
 library(ranger)
 library(xgboost)
 library(pROC)
+library(factoextra)
+
 
 # Load Datset
 dat1 = read_csv("./final.csv") %>%
@@ -43,6 +45,86 @@ After sectioning the data accordingly, we counted missing values to determine if
 
 ## Data Exploration
 
+We checked for collinearity of variables via a correlation matrix; as there were no significant correlations between any predictors, all of our original variables were retained. We stratified responses by gender and visualized them in histograms. Some predictors have more skewed distributions by gender compared to others (e.g. cars, war movies). Other variables such as alcohol use and going outdoors were more evenly distributed by gender. 
+
+We used an unsupervised learning technique (principle component analysis) to further explore the data. Due to the large number of predictors, the first and second components only explained 17.1% and 9.4% of the total variance in the data respectively. Nevertheless, PCA was insightful in that some of the variables mostly explained by the first component (interest in cars, adrenaline-driven sports, and active sports) were skewed toward males. 
+
+```{r}
+eda <-dat1 
+
+#Integer to Categorical Variable
+eda$gender2 <-as.factor(eda$gender)
+levels(eda$gender2) <-c("female", "male")
+
+plot2 <-ggplot(eda, aes(x=metal_or_hardrock, fill=gender2)) +
+    geom_histogram(binwidth=1, color="black") + labs(x = "Metal/Hardrock") + theme(axis.title.x=element_text(size=6))
+
+plot3 <-ggplot(eda, aes(x=punk, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot4 <-ggplot(eda, aes(x=horror, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot5 <-ggplot(eda, aes(x=thriller, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot6 <-ggplot(eda, aes(x=war, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot7 <-ggplot(eda, aes(x=action, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot8 <-ggplot(eda, aes(x=countryside_outdoors, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Outdoors") + theme(axis.title.x=element_text(size=6))
+
+plot9 <-ggplot(eda, aes(x=active_sport, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot10 <-ggplot(eda, aes(x=adrenaline_sports, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot11 <-ggplot(eda, aes(x=cars, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot12 <-ggplot(eda, aes(x=fear_of_public_speaking, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Public Speaking") + theme(axis.title.x=element_text(size=6))
+
+plot13 <-ggplot(eda, aes(x=smoking, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot14 <-ggplot(eda, aes(x=alcohol, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot15 <-ggplot(eda, aes(x=criminal_damage, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot16 <-ggplot(eda, aes(x=cheating_in_school, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Cheating") + theme(axis.title.x=element_text(size=6))
+
+plot17 <-ggplot(eda, aes(x=small_big_dogs, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + labs(x = "Dangerous Dogs") + theme(axis.title.x=element_text(size=6))
+
+plot18 <-ggplot(eda, aes(x=prioritising_workload, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot19 <-ggplot(eda, aes(x=assertiveness, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+plot20 <-ggplot(eda, aes(x=parents_advice, fill=gender2)) +
+    geom_histogram(binwidth=1, colour="black") + theme(axis.title.x=element_text(size=6))
+
+ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11, plot12, plot13, plot14, plot15, plot16, plot17, plot18, plot19, plot20, legend = NULL, common.legend=TRUE)
+
+eda_pca <-eda
+eda_pca$gender2 <-NULL
+
+pca <- prcomp(eda_pca)
+pca$rotation
+
+fviz_pca_biplot(pca, axes = c(1,2), 
+                habillage = ifelse(eda_pca$gender==1, "Male","Female"), 
+                label = c("var"), addEllipses = TRUE, title="PCA by Gender")
+```
 ## Method
 
 We selected 19 variables that were related to thrill or risk seeking behaviors. The following variables were included in our analysis:
@@ -115,6 +197,8 @@ qda.fit <- train(gender~., dat1_train,
 
 ### KNN
 
+The method of K-nearest neighbors makes no assumptions about the shape of the decision boundary; therefore, if the decision boundary is highly non-linear then this model will perform better than others. This model has one tuning parameter, K, the number of closest training points. An optimal value of K was chosen by repeated cross-validation using the `train()` function in the `caret` package by specifying the tuning grid.
+
 ```{r, message = FALSE, warning = FALSE, include = FALSE, cache = TRUE}
 knn.fit = train(x = dat1_train[,1:19],
                 y = dat1_train$gender,
@@ -127,6 +211,8 @@ knn.fit = train(x = dat1_train[,1:19],
 ### SVM 
 
 **Linear**
+
+
 
 ```{r, include = FALSE, cache = TRUE}
 set.seed(1)
@@ -167,7 +253,7 @@ According to the final model, the most important variables for classification ar
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
-rf.grid = expand.grid(mtry = 1:5,
+rf.grid = expand.grid(mtry = seq(from = 2, to = 6, length.out = 5),
                       splitrule = "gini",
                       min.node.size = 1:10)
 
@@ -287,6 +373,7 @@ xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance") + theme_bw()
 
 
 ## Conclusion
+Some of the limitations of this report include translation issues. The original language of the survey was Slovakian, and this could influence interpretations. Additionally, this affects generalizability of findings as the population of this survey was specifically statistics students in Slovakia. The deletion method used would also present issues if data were not missing at random, resulting in bias.
 
 \newpage
 
