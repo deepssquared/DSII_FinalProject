@@ -243,7 +243,7 @@ svm_radial = train(gender ~ .,
 
 ```{r, include = FALSE, cache = TRUE}
 # Set up tuning grid for random forest
-rf.grid = expand.grid(mtry = 1:5,
+rf.grid = expand.grid(mtry = seq(from = 2, to = 6, length.out = 5),
                       splitrule = "gini",
                       min.node.size = 1:10)
 
