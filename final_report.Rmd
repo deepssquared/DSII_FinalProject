@@ -219,7 +219,7 @@ knn.fit = train(x = dat1_train[,1:19],
 
 **Linear**
 
-The support vector classifier has one tuning parameter, C. We used the `train()` function in the `caret` package to choose the best C by cross-validation. Since the support vector classifier is a hyperplane, the model assumes that the decision boundary is linear, which is a potential drawback if the decision boundary is non-linear.
+The support vector classifier has one tuning parameter, C. Using the `train()` function in the `caret` package the best C was 0.0433, which was chosen by cross-validation. Since the support vector classifier is a hyperplane, the model assumes that the decision boundary is linear, which is a potential drawback if the decision boundary is non-linear.
 
 
 ```{r, include = FALSE, cache = TRUE}
@@ -236,7 +236,7 @@ svm_linear = train(gender ~ . ,
 
 **Radial**
 
-The support vector machine with a radial kernel has two tuning parameters. One is C, the cost parameter, and the other is the degree of non-linearity sigma. We used the `train()` function in the `caret` packers to choose these parameters by cross-validation. This model assumes a non-linear boundary.
+The support vector machine with a radial kernel has two tuning parameters. One is C, the cost parameter, and the other is the degree of non-linearity sigma. We used the `train()` function in the `caret` package to choose these parameters by cross-validation. The best C was 78.033 and the best sigma was 0.000335. This model assumes a non-linear boundary. One potential drawback of support vector machines is that you cannot assess variable importance or estimate probabilities as in logistic regression.
 
 ```{r, include = FALSE, cache = TRUE}
 # Set tuning grid
