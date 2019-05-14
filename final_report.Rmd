@@ -122,7 +122,7 @@ ggarrange(plot2, plot3, plot4, plot5, plot6, plot7, plot8, plot9, plot10, plot11
 ```
 **Figure 1**
 
-```{r}
+```{r, echo = FALSE}
 eda_pca <-eda
 eda_pca$gender2 <-NULL
 eda_pca$gender <-ifelse(eda_pca$gender=="female", 0, 1)
@@ -173,7 +173,7 @@ Variables that were ranked on a scale from 1-5 were considered as continous resp
 *  Support vector machine (linear and radial kernels)
 *  Classification trees (random forest and boosting)
 
-Training and test error were calculated for each model to evaluate overfitting. The final models was chosen by assessing the training data using the `resamples()` function in the `caret` package.
+Training and test error were calculated for each model to evaluate overfitting. The final model was chosen by assessing the training data using the `resamples()` function in the `caret` package.
 
 ## Models
 
@@ -386,7 +386,7 @@ resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
                         RF = rf.fit, XGB = xgb.fit))
 bwplot(resamp)
 ```
-
+**Figure 3**
 
 ## Final Model
 
@@ -399,7 +399,7 @@ xgb_imp = xgb.importance(feature_names = xgb.fit$finalModel$feature_names,
                          model = xgb.fit$finalModel)
 xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance") + theme_bw()
 ```
-
+**Figure 4**
 
 ## Conclusion
 Some of the limitations of this report include translation issues. The original language of the survey was Slovakian, and this could influence interpretations. Additionally, this affects generalizability of findings as the population of this survey was specifically statistics students in Slovakia. The deletion method used would also present issues if data were not missing at random, resulting in bias.
@@ -407,6 +407,9 @@ Some of the limitations of this report include translation issues. The original 
 \newpage
 
 ## Appendix
+
+### Code
+
 
 
 
