@@ -67,14 +67,14 @@ We selected 19 variables that were related to thrill or risk seeking behaviors. 
   +  I'm not afraid to give my opinion if I feel strongly about something
   +  I always listen to my parents' advice
   
-Variables that were ranked from on a scale from 1-5 were considered as continous responses. After splitting the data into training and testing sets using an 80/20 split, we fit the following models to the training data:
+Variables that were ranked on a scale from 1-5 were considered as continous responses. After splitting the data into training and testing sets using an 80/20 split, we fit the following models to the training data:
 *  Logistic regression
 *  Discriminant analysis (linear and quadratic)
 *  KNN
 *  Support vector machine (linear and radial kernels)
 *  Classification trees (random forest and boosting)
 
-Model performance was assessed on the training data using the `resamples()` function in the `caret` package.
+Training and test error were calculated for each model to evaluate overfitting. The final models was chosen by assessing the training data using the `resamples()` function in the `caret` package.
 
 ## Models
 
@@ -209,8 +209,78 @@ resamp = resamples(list(LOG = log.fit, LDA = lda.fit,
 bwplot(resamp)
 ```
 
+```{r}
+# List of models
+models = list(log.fit, lda.fit, qda.fit, knn.fit, 
+              svm_linear, svm_radial, rf.fit, xgb.fit)
+
+# Function which will succinctly summarize confusion matrix results in table format (although specified for test data also works with training data)
+test_summary = function(data, model){
+  # Fit predictions using specified model
+  pred = predict(model, newdata = data)
+  
+  # Confusion Matrix
+  test_matrix = confusionMatrix(data = pred,
+                reference = factor(data$gender),
+                positive = "male")
+  
+  # First join table
+  join1 = test_matrix$overall %>% tibble() %>% 
+    rename("Test" = ".") %>% 
+    mutate(Measure = c("Accuracy", "Kappa", "AccuracyLower", "AccuracyUpper",
+                     "AccuracyNull", "AccuracyPValue", "McnemarPValue")) %>% 
+    spread(key = Measure, value = Test) %>% 
+    mutate(TestError = 1 - Accuracy) %>% 
+    select(Accuracy, TestError)
+
+  return(join1)
+}
+```
+
+```{r, echo = FALSE}
+# Initialize table for iteration
+table = tibble()
+
+# Apply function to all models with testing data
+for (i in 1:length(models)) {
+  temp = test_summary(dat1_test, models[[i]])
+  table = rbind(table, temp)
+}
+
+table = table %>% 
+  select(TestError)
+
+# Initialize table for iteration with training data
+train_table = list()
+
+# Apply function to all models with training data
+for (i in 1:length(models)) {
+  temp = test_summary(dat1_train, models[[i]])
+  train_table = rbind(train_table, temp)
+}
+
+train_table = train_table %>% 
+  select(TestError) %>% 
+  rename(TrainError = TestError) %>% 
+  mutate(Models = c("Logistic", "LDA", "QDA", "KNN", "SVM Linear", 
+                    "SVM Radial", "Random Forest", "XGBoost")) %>% 
+  select(Models, TrainError)
+
+cbind(train_table, table) %>% knitr::kable()
+```
+
 
 ## Final Model
+
+Based off of our resampling results through the `caret` package, the best model to predict gender was the XGBoost model. 
+
+```{r, echo = FALSE}
+# Variable Importance Graph
+xgb_imp = xgb.importance(feature_names = xgb.fit$finalModel$feature_names,
+                         model = xgb.fit$finalModel)
+xgb.ggplot.importance(xgb_imp) + ggtitle("Variable Importance") + theme_bw()
+```
+
 
 ## Conclusion
 Some of the limitations of this report include translation issues. The original language of the survey was Slovakian, and this could influence interpretations. Additionally, this affects generalizability of findings as the population of this survey was specifically statistics students in Slovakia. The deletion method used would also present issues if data were not missing at random, resulting in bias.
