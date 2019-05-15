@@ -537,11 +537,13 @@ bwplot(resamp)
 ```
 
 **Random forest mtry tuning results**
+  
 ```{r, echo = FALSE}
 knitr::include_graphics("rf_mtry_tune.png")
 ```
 
 **XG Boost tuning results**
+  
 ```{r, echo = FALSE}
 knitr::include_graphics("tuning1_boost.jpeg")
 knitr::include_graphics("tuning_performance.jpeg")
