@@ -1,5 +1,6 @@
 # Data Science II Final Project
-## "Predicting Gender from Risk-Seeking Behaviors"
+## Predicting Gender from Risk-Seeking Behaviors
+*Deepika Dilip, Rachel Tsong, and Adina Zhang*
 
 
 ```{r setup, include = FALSE}
